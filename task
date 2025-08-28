@@ -1,0 +1,50 @@
+function solution(D) {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    let result = { "Mon": 0, "Tue": 0, "Wed": 0, "Thu": 0, "Fri": 0, "Sat": 0, "Sun": 0 };
+
+    
+    for (let dateStr in D) {
+        let date = new Date(dateStr);
+        let dayName = days[date.getDay()]; 
+        result[dayName] += D[dateStr];
+    }
+
+    
+    let dayKeys = Object.keys(result);
+    for (let i = 0; i < dayKeys.length; i++) {
+        let day = dayKeys[i];
+        if (result[day] === 0) {
+            
+            let prevIndex = (i - 1 + 7) % 7;
+            while (prevIndex !== i && result[dayKeys[prevIndex]] === 0) {
+                prevIndex = (prevIndex - 1 + 7) % 7;
+            }
+            
+            let nextIndex = (i + 1) % 7;
+            while (nextIndex !== i && result[dayKeys[nextIndex]] === 0) {
+                nextIndex = (nextIndex + 1) % 7;
+            }
+            
+            result[day] = Math.floor((result[dayKeys[prevIndex]] + result[dayKeys[nextIndex]]) / 2);
+        }
+    }
+
+    return result;
+}
+
+// Example 1
+let input1 = {
+    "2020-01-01": 4, "2020-01-02": 4, "2020-01-03": 6,
+    "2020-01-04": 8, "2020-01-05": 2, "2020-01-06": -6,
+    "2020-01-07": 2, "2020-01-08": -2
+};
+console.log(solution(input1));
+{ Mon: -6, Tue: 2, Wed: 2, Thu: 4, Fri: 6, Sat: 8, Sun: 2 }
+
+(missing Thu & Fri)
+let input2 = {
+    "2020-01-01": 6, "2020-01-04": 12,
+    "2020-01-05": 14, "2020-01-06": 2, "2020-01-07": 4
+};
+console.log(solution(input2));
+ { Mon: 2, Tue: 4, Wed: 6, Thu: 8, Fri: 10, Sat: 12, Sun: 14 }
